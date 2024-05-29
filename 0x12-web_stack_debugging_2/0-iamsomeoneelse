@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Script used to run software as another user
+# Script must pass
+
+sudo -u "$1" whoami
