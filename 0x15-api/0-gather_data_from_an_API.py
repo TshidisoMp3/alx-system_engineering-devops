@@ -5,31 +5,21 @@ import requests
 from sys import argv
 
 
-import requests
-import sys
-
-
-def todofunc():
-    ''' function that gets todo tasks and prints the completed tasks '''
-    r = requests.get('https://jsonplaceholder.typicode.com/users/{}'
-                     .format(sys.argv[1]))
-    new = r.json()
-    name = new.get('name')
-    r = requests.get('https://jsonplaceholder.typicode.com/users/{}/todos'
-                     .format(sys.argv[1]))
-    new = r.json()
-    size = len(new)
-    titles = []
-    count = 0
-    for i in range(0, size):
-        if new[i].get('completed'):
-            count += 1
-            titles.append(new[i].get('title'))
-
-    print("Employee {} is done with tasks({}/{}):".format(name, count, size))
-    for i in range(0, count):
-            print("\t {}".format(titles[i]))
-
-
 if __name__ == "__main__":
-    todofunc()
+    user_id = argv[1]
+    url = 'https://jsonplaceholder.typicode.com/users/{}'.format(user_id)
+    response = requests.get(url)
+    user = response.json()
+    name = user.get('name')
+
+    url = 'https://jsonplaceholder.typicode.com/todos'
+    response = requests.get(url)
+    todos = response.json()
+    total_tasks = len(todos)
+    done_tasks = [task for task in todos if task.get('completed') is True]
+
+    print('Employee {} is done with tasks({}/{}):'.format(name,
+                                                          len(done_tasks),
+                                                          total_tasks))
+    for task in done_tasks:
+        print('\t {}'.format(task.get('title')))
